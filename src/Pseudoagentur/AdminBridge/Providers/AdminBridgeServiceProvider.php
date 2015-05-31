@@ -1,10 +1,12 @@
 <?php namespace Pseudoagentur\AdminBridge\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\Finder as SymfonyFinder;
 
 
 class AdminBridgeServiceProvider extends ServiceProvider {
+
+	const BOOTSRAP_FILE = 'bootstrap.php';
 
 	/**
 	 * Indicates if loading of the provider is deferred.
@@ -34,7 +36,9 @@ class AdminBridgeServiceProvider extends ServiceProvider {
 
     protected function getAllFiles()
     {
-        $files = Finder::create()->files()->name('admin.php')->in($this->directory);
+    	$files = new SymfonyFinder();
+		$files->files()->name('admin.php')->in($this->directory);
+
         $files->sort(function ($a)
         {
             return $a->getFilename() !== static::BOOTSRAP_FILE;
