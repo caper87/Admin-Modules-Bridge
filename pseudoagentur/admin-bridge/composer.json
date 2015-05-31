@@ -1,0 +1,25 @@
+{
+    "name": "pseudoagentur/admin-bridge",
+    "description": "",
+    "authors": [
+        {
+            "name": "Pseudoagentur",
+            "email": "hello@pseudoagentur.de"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "laravel/framework": "5.0.*",
+        "sleeping-owl/admin": "dev-development",
+        "pingpong/modules": "~2.0",
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Pseudoagentur\\AdminBridge\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
