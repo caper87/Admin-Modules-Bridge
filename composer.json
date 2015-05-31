@@ -11,12 +11,10 @@
         "php": ">=5.4.0",
         "laravel/framework": "5.0.*",
         "sleeping-owl/admin": "dev-development",
-        "pingpong/modules": "~2.0",
+        "pingpong/modules": "~2.0"
     },
     "autoload": {
-        "classmap": [
-            "src/migrations"
-        ],
+        "classmap": [],
         "psr-0": {
             "Pseudoagentur\\AdminBridge\\": "src/"
         }
