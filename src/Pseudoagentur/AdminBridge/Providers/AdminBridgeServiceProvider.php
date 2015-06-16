@@ -23,10 +23,15 @@ class AdminBridgeServiceProvider extends ServiceProvider {
 	public function register()
     {
         $this->directory = config('modules.paths.modules');
-        if ( ! is_dir($this->directory))
-        {
-            return;
-        }
+		$this->vendor = base_path('vendor/' . config('modules.composer.vendor'));
+		
+		$this->moduleDirectory = is_dir($this->directory);
+		$this->vendorDirecotry = is_dir($this->vendor);
+		
+		if ( !$this->moduleDirectory && !$this->vendorDirecotry) {
+			return;
+		}
+        
         $files = $this->getAllFiles();
         foreach ($files as $file)
         {
@@ -37,7 +42,14 @@ class AdminBridgeServiceProvider extends ServiceProvider {
     protected function getAllFiles()
     {
     	$files = new SymfonyFinder();
-		$files->files()->name('admin.php')->in($this->directory);
+		
+		if ( $this->moduleDirectory ) {
+			$files->files()->name('admin.php')->in($this->directory);
+		} 
+		
+		if ( $this->vendorDirecotry ) {
+			$files->files()->name('admin.php')->in($this->vendor);
+		}
 
         $files->sort(function ($a)
         {
