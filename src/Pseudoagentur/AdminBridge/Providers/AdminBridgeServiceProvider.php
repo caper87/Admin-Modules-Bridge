@@ -2,7 +2,7 @@
 
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Finder\Finder as SymfonyFinder;
-
+use Pingpong\Modules\Facades\Module;
 
 class AdminBridgeServiceProvider extends ServiceProvider {
 
@@ -21,28 +21,34 @@ class AdminBridgeServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function register()
-    {
-        $this->directory = config('modules.paths.modules');
-        if ( ! is_dir($this->directory))
-        {
-            return;
-        }
+    {	
+		$this->modules = Module::enabled();
+	
+		if ( count($this->modules) == 0 ) {
+			return;
+		}
+		
         $files = $this->getAllFiles();
+		
         foreach ($files as $file)
         {
             require $file;
-        }
+		}
     }
 
     protected function getAllFiles()
     {
     	$files = new SymfonyFinder();
-		$files->files()->name('admin.php')->in($this->directory);
+		
+		foreach($this->modules as $module) {			
+			$files->files()->name('admin.php')->in(Module::getModulePath($module->name));
+		}		
 
         $files->sort(function ($a)
         {
             return $a->getFilename() !== static::BOOTSRAP_FILE;
         });
+		
         return $files;
     }
 
