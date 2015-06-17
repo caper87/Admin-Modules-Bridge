@@ -2,7 +2,7 @@
 
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Finder\Finder as SymfonyFinder;
-
+use Pingpong\Modules\Facades\Module;
 
 class AdminBridgeServiceProvider extends ServiceProvider {
 
@@ -21,40 +21,34 @@ class AdminBridgeServiceProvider extends ServiceProvider {
 	 * @return void
 	 */
 	public function register()
-    {
-        $this->directory = config('modules.paths.modules');
-		$this->vendor = base_path('vendor/' . config('modules.composer.vendor'));
-		
-		$this->moduleDirectory = is_dir($this->directory);
-		$this->vendorDirecotry = is_dir($this->vendor) && config('modules.scan.enabled');
-		
-		if ( !$this->moduleDirectory && !$this->vendorDirecotry) {
+    {	
+		$this->modules = Module::enabled();
+	
+		if ( count($this->modules) == 0 ) {
 			return;
 		}
-        
+		
         $files = $this->getAllFiles();
+		
         foreach ($files as $file)
         {
             require $file;
-        }
+		}
     }
 
     protected function getAllFiles()
     {
     	$files = new SymfonyFinder();
 		
-		if ( $this->moduleDirectory ) {
-			$files->files()->name('admin.php')->in($this->directory);
-		} 
-		
-		if ( $this->vendorDirecotry ) {
-			$files->files()->name('admin.php')->in($this->vendor);
-		}
+		foreach($this->modules as $module) {			
+			$files->files()->name('admin.php')->in(Module::getModulePath($module->name));
+		}		
 
         $files->sort(function ($a)
         {
             return $a->getFilename() !== static::BOOTSRAP_FILE;
         });
+		
         return $files;
     }
 
