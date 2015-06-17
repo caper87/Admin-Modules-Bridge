@@ -26,7 +26,7 @@ class AdminBridgeServiceProvider extends ServiceProvider {
 		$this->vendor = base_path('vendor/' . config('modules.composer.vendor'));
 		
 		$this->moduleDirectory = is_dir($this->directory);
-		$this->vendorDirecotry = is_dir($this->vendor);
+		$this->vendorDirecotry = is_dir($this->vendor) && config('modules.scan.enabled');
 		
 		if ( !$this->moduleDirectory && !$this->vendorDirecotry) {
 			return;
